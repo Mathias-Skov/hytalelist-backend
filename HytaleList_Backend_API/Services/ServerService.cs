@@ -15,5 +15,11 @@ namespace HytaleList_Backend_API.Services
             var servers = _repository.GetAllServers();
             return servers;
         }
+
+        public Server? GetServerById(int id)
+        {
+            var server = _repository.GetServerById(id);
+            return server;
+        }
     }
 }

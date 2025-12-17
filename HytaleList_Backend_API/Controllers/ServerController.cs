@@ -14,11 +14,28 @@ namespace HytaleList_Backend_API.Controllers
             _serverService = serverSevice;
         }
 
-        [HttpGet]
+        // GET: /Server/GetAllServers
+        [HttpGet("GetAllServers")]
         public ActionResult<List<Server>> Get()
         {
             var servers = _serverService.GetAllServers();
+            if (servers.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(servers);
+        }
+
+        // GET: /Server/GetServerById/{id}
+        [HttpGet("GetServerById/{id}")]
+        public ActionResult<Server> GetServerById(int id)
+        {
+            var server = _serverService.GetServerById(id);
+            if (server == null)
+            {
+                return NotFound();
+            }
+            return Ok(server);
         }
     }
 }

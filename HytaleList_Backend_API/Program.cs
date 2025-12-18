@@ -1,6 +1,7 @@
 
 using HytaleList_Backend_API.Data;
 using HytaleList_Backend_API.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace HytaleList_Backend_API
 {
@@ -16,8 +17,13 @@ namespace HytaleList_Backend_API
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddSingleton<Repository>();
+            builder.Services.AddScoped<Repository>();
             builder.Services.AddScoped<ServerService>();
+
+            builder.Services.AddDbContext<MyDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             var app = builder.Build();
 

@@ -10,15 +10,16 @@ namespace HytaleList_Backend_API.Services
         {
             _repository = repository;
         }
-        public List<Server> GetAllServers()
+
+        public async Task<List<Server>> GetAllServers()
         {
-            var servers = _repository.GetAllServers();
+            var servers = await _repository.GetAllServers();
             return servers;
         }
 
-        public Server? GetServerById(int id)
+        public async Task<Server?> GetServerById(int id)
         {
-            var server = _repository.GetServerById(id);
+            var server = await _repository.GetServerById(id);
             return server;
         }
     }

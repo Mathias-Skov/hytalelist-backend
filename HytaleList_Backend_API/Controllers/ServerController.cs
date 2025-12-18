@@ -16,9 +16,9 @@ namespace HytaleList_Backend_API.Controllers
 
         // GET: /Server/GetAllServers
         [HttpGet("GetAllServers")]
-        public ActionResult<List<Server>> Get()
+        public async Task<ActionResult<List<Server>>> Get()
         {
-            var servers = _serverService.GetAllServers();
+            var servers = await _serverService.GetAllServers();
             if (servers.Count == 0)
             {
                 return NotFound();
@@ -28,9 +28,9 @@ namespace HytaleList_Backend_API.Controllers
 
         // GET: /Server/GetServerById/{id}
         [HttpGet("GetServerById/{id}")]
-        public ActionResult<Server> GetServerById(int id)
+        public async Task<ActionResult<Server>> GetServerById(int id)
         {
-            var server = _serverService.GetServerById(id);
+            var server = await _serverService.GetServerById(id);
             if (server == null)
             {
                 return NotFound();

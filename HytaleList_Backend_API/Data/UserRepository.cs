@@ -1,4 +1,8 @@
-﻿namespace HytaleList_Backend_API.Data
+﻿using HytaleList_Backend_API.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+
+namespace HytaleList_Backend_API.Data
 {
     public class UserRepository
     {
@@ -9,23 +13,46 @@
             _dbContext = dbContext;
         }
 
-        public async Task<bool> CreateUser(string username, string email, string passwordHash)
+        public async Task<User?> GetUserByUsername(string username)
         {
             try
             {
-                var user = new Models.User
-                {
-                    Username = username,
-                    Email = email,
-                    PasswordHash = passwordHash
-                };
+                var user = await _dbContext.users
+                    .FirstOrDefaultAsync(u => u.Username == username);
+                return user;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[UserRepository]: GetUserByUsername(username) - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> CreateUser(User user)
+        {
+            try
+            {
                 _dbContext.users.Add(user);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[UserRepository]: CreateUser() - Exception: {ex.Message}");
+                Debug.WriteLine($"[UserRepository]: CreateUser(user) - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> UserExists(string username)
+        {
+            try
+            {
+                var findUser = await _dbContext.users.AnyAsync(u => u.Username == username);
+                return findUser;
+            }
+            catch
+            {
+                Debug.WriteLine($"[UserRepository]: UserExists(username) - Exception occurred while checking user existence.");
                 return false;
             }
         }

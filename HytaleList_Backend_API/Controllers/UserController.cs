@@ -14,19 +14,28 @@ namespace HytaleList_Backend_API.Controllers
             _userService = userService;
         }
 
+        // POST /User/Login
+        [HttpPost("Login")]
+        public async Task<ActionResult<User>> Login([FromQuery] string username, [FromQuery] string password)
+        {
+            var user = await _userService.AuthenticateUser(username, password);
+            if (user == null)
+            {
+                return Unauthorized("Invalid username or password.");
+            }
+            return Ok(user);
+        }
+
         // POST: /User/CreateUser
         [HttpPost("CreateUser")]
-        public async Task<ActionResult<User>> CreateUser(string username, string passwordHash, string email)
+        public async Task<ActionResult> CreateUser([FromQuery] string username, [FromQuery] string password, [FromQuery] string email)
         {
-            var createUser = await _userService.CreateUser(username, passwordHash, email);
-            if (!createUser)
+            var created = await _userService.CreateUser(username, password, email);
+            if (!created)
             {
                 return BadRequest("User could not be created.");
             }
-            else
-            {                 
-                return Ok("User created successfully.");
-            }
+            return Ok("User created successfully.");
         }
     }
 }

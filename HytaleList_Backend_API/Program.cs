@@ -17,8 +17,13 @@ namespace HytaleList_Backend_API
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddScoped<Repository>();
+            // Server related services
+            builder.Services.AddScoped<ServerRepository>();
             builder.Services.AddScoped<ServerService>();
+
+            // User related services
+            builder.Services.AddScoped<UserRepository>();
+            builder.Services.AddScoped<UserService>();
 
             builder.Services.AddDbContext<MyDbContext>(options =>
             {

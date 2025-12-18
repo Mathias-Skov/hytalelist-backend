@@ -4,11 +4,11 @@ using System.Diagnostics;
 
 namespace HytaleList_Backend_API.Data
 {
-    public class Repository
+    public class ServerRepository
     {
         private readonly MyDbContext _dbContext;
 
-        public Repository(MyDbContext dbContext)
+        public ServerRepository(MyDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -22,7 +22,7 @@ namespace HytaleList_Backend_API.Data
             } 
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Repository]: GetAllServers() - Exception: {ex.Message}");
+                Debug.WriteLine($"[ServerRepository]: GetAllServers() - Exception: {ex.Message}");
                 return new List<Server>();
             }
         }
@@ -36,7 +36,7 @@ namespace HytaleList_Backend_API.Data
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Repository]: GetServerById({id}) - Exception: {ex.Message}");
+                Debug.WriteLine($"[ServerRepository]: GetServerById({id}) - Exception: {ex.Message}");
                 return null;
             }
         }
@@ -61,7 +61,7 @@ namespace HytaleList_Backend_API.Data
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Repository]: GetServerByIdUsingLoop({id}) - Exception: {ex.Message}");
+                Debug.WriteLine($"[ServerRepository]: GetServerByIdUsingLoop({id}) - Exception: {ex.Message}");
                 return null;
             }
         }

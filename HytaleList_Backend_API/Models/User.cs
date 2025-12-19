@@ -11,7 +11,7 @@ namespace HytaleList_Backend_API.Models
         public string Username { get; set; } 
         public string PasswordHash { get; set; }
         public string Email { get; set; }
-        public string? EmailVerified { get; set; }
+        public bool EmailVerified { get; set; }
         public DateTime DateCreated { get; set; }
         public int ListedServers { get; set; }
     }

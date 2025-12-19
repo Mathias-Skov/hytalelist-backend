@@ -43,6 +43,21 @@ namespace HytaleList_Backend_API.Data
             }
         }
 
+        public async Task<User> GetUserById(int userId)
+        {
+            try
+            {
+                var user = await _dbContext.users
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[UserRepository]: GetUserById(userId) - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<bool> UserExists(string username)
         {
             try

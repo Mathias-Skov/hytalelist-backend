@@ -1,6 +1,9 @@
 ﻿using HytaleList_Backend_API.Models;
 using HytaleList_Backend_API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace HytaleList_Backend_API.Controllers
 {
@@ -14,6 +17,39 @@ namespace HytaleList_Backend_API.Controllers
             _userService = userService;
         }
 
+        // GET /User/Details
+        [HttpGet("Details")]
+        [Authorize]
+        public async Task<ActionResult> GetUserDetails()
+        {
+            // Get the userId from the JWT claims
+            var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if(string.IsNullOrWhiteSpace(sub))
+                return Unauthorized("User identifier not found in token.");
+
+            if(!int.TryParse(sub, out int userId))
+                return BadRequest("Invalid user identifier.");
+
+            // Lookup the user in the database
+            var user = await _userService.GetUserById(userId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Return safe data only
+            return Ok(new
+            {
+                user.Id,
+                user.Username,
+                user.Email,
+                user.DateCreated,
+                user.EmailVerified,
+                user.ListedServers
+            });
+        }
+
         // POST /User/Login
         [HttpPost("Login")]
         public async Task<ActionResult<User>> Login([FromBody] UserDTO userDto)
@@ -25,12 +61,10 @@ namespace HytaleList_Backend_API.Controllers
 
             var user = await _userService.AuthenticateUser(userDto);
 
-            if (user == false)
+            if (user == null)
             {
                 return Unauthorized("Invalid username or password.");
             }
-
-            //string token = _userService.CreateJWT(user);
 
             return Ok(user);
         }

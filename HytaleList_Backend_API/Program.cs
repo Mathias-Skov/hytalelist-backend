@@ -1,7 +1,10 @@
 
 using HytaleList_Backend_API.Data;
 using HytaleList_Backend_API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace HytaleList_Backend_API
 {
@@ -12,7 +15,6 @@ namespace HytaleList_Backend_API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
@@ -41,6 +43,34 @@ namespace HytaleList_Backend_API
                 });
             });
 
+            // JWT Auth (Bearer)
+            var jwtKey = builder.Configuration["Jwt:Key"];
+            var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+            var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!)),
+                    ClockSkew = TimeSpan.FromMinutes(1)
+                };
+            });
+
+            builder.Services.AddAuthorization();
+
             var app = builder.Build();
 
             // Use the CORS policy
@@ -51,6 +81,10 @@ namespace HytaleList_Backend_API
             {
                 app.MapOpenApi();
             }
+
+            // JWT
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseHttpsRedirection();
 

@@ -23,7 +23,7 @@ namespace HytaleList_Backend_API.Data
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[UserRepository]: GetUserByUsername(username) - Exception: {ex.Message}");
+                Debug.WriteLine($"[UserRepository]: GetUserByUsername(username) - Exception: {ex.Message}");
                 return null;
             }
         }

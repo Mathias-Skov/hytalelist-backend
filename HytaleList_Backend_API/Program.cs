@@ -24,7 +24,6 @@ namespace HytaleList_Backend_API
             // User related services
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();
-            builder.Services.AddScoped<IPasswordService, PasswordService>();
 
             builder.Services.AddDbContext<MyDbContext>(options =>
             {

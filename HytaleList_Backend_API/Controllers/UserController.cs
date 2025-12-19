@@ -16,25 +16,41 @@ namespace HytaleList_Backend_API.Controllers
 
         // POST /User/Login
         [HttpPost("Login")]
-        public async Task<ActionResult<User>> Login([FromQuery] string username, [FromQuery] string password)
+        public async Task<ActionResult<User>> Login([FromBody] UserDTO userDto)
         {
-            var user = await _userService.AuthenticateUser(username, password);
-            if (user == null)
+            if(userDto.Username == null || userDto.PasswordHash == null)
+            {
+                return BadRequest("Username and password are required.");
+            }
+
+            var user = await _userService.AuthenticateUser(userDto);
+
+            if (user == false)
             {
                 return Unauthorized("Invalid username or password.");
             }
+
+            //string token = _userService.CreateJWT(user);
+
             return Ok(user);
         }
 
         // POST: /User/CreateUser
         [HttpPost("CreateUser")]
-        public async Task<ActionResult> CreateUser([FromQuery] string username, [FromQuery] string password, [FromQuery] string email)
+        public async Task<ActionResult<User>> CreateUser([FromBody] UserDTO userDto)
         {
-            var created = await _userService.CreateUser(username, password, email);
+            if(userDto.Username == null || userDto.PasswordHash == null || userDto.Email == null)
+            {
+                return BadRequest("Username, password, and email are required.");
+            }
+
+            var created = await _userService.CreateUser(userDto);
+
             if (!created)
             {
                 return BadRequest("User could not be created.");
             }
+
             return Ok("User created successfully.");
         }
     }

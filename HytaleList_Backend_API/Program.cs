@@ -27,6 +27,10 @@ namespace HytaleList_Backend_API
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();
 
+            // Voting related services
+            builder.Services.AddScoped<VoteRepository>();
+            builder.Services.AddScoped<VoteService>();
+
             builder.Services.AddDbContext<MyDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

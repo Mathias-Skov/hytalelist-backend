@@ -22,5 +22,20 @@ namespace HytaleList_Backend_API.Controllers
 
             return Ok(server);
         }
+
+        // POST: /Vote/SubmitVote/{id}
+        [HttpPost("SubmitVote/{id}")]
+        public async Task<ActionResult> SubmitVote([FromRoute] int id, [FromBody] string username)
+        {
+            var result = await _voteService.SubmitVote(id, username);
+            if (result)
+            {
+                return Ok("Vote submitted successfully.");
+            }
+            else
+            {
+                return BadRequest("Failed to submit vote.");
+            }
+        }
     }
 }

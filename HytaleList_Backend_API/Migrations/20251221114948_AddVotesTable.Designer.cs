@@ -4,6 +4,7 @@ using HytaleList_Backend_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HytaleList_Backend_API.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251221114948_AddVotesTable")]
+    partial class AddVotesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,41 +97,6 @@ namespace HytaleList_Backend_API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
-                });
-
-            modelBuilder.Entity("HytaleList_Backend_API.Models.Vote", b =>
-                {
-                    b.Property<int>("VoteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoteId"));
-
-                    b.Property<int>("ServerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("VoteDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("VoteId");
-
-                    b.HasIndex("ServerId");
-
-                    b.ToTable("votes");
-                });
-
-            modelBuilder.Entity("HytaleList_Backend_API.Models.Vote", b =>
-                {
-                    b.HasOne("HytaleList_Backend_API.Models.Server", "Server")
-                        .WithMany()
-                        .HasForeignKey("ServerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Server");
                 });
 #pragma warning restore 612, 618
         }

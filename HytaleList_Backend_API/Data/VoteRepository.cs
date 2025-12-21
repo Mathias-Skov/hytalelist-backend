@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HytaleList_Backend_API.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace HytaleList_Backend_API.Data
@@ -15,6 +16,7 @@ namespace HytaleList_Backend_API.Data
         {
             try
             {
+                // Might want to seperate into ServerRepository on sight
                 var topVotes = await _dbContext.servers
                     .Where(v => v.ServerId == serverId)
                     .Select(v => v.Votes)
@@ -26,6 +28,25 @@ namespace HytaleList_Backend_API.Data
             {
                 Debug.WriteLine($"[VoteRepository]: GetTopVotesByServerId(serverId) - Exception: {ex.Message}");
                 return 0;
+            }
+        }
+
+        public async Task<bool> UpdateServerVotes(Server server, Vote vote)
+        {
+            try
+            {
+                // Might want to seperate into ServerRepository on sight
+                _dbContext.servers.Update(server);
+                
+                _dbContext.votes.Add(vote);
+
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[VoteRepository]: UpdateServerVotes(server) - Exception: {ex.Message}");
+                return false;
             }
         }
     }

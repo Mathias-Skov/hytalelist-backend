@@ -13,7 +13,6 @@ namespace HytaleList_Backend_API.Models
         [StringLength(50, MinimumLength = 3)]
         public string? Password { get; set; }
 
-        [Required]
         [EmailAddress]
         public string? Email { get; set; }
     }

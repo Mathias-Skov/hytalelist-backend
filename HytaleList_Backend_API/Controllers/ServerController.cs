@@ -1,5 +1,6 @@
 ﻿using HytaleList_Backend_API.Models;
 using HytaleList_Backend_API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HytaleList_Backend_API.Controllers
@@ -34,6 +35,19 @@ namespace HytaleList_Backend_API.Controllers
             if (server == null)
             {
                 return NotFound();
+            }
+            return Ok(server);
+        }
+
+        // POST: /Server/AddServer
+        [HttpPost("AddServer")]
+        [Authorize]
+        public async Task<ActionResult<Server>> AddServer([FromBody] Server newServer)
+        {
+            var server = await _serverService.AddServer(newServer);
+            if (server == null)
+            {
+                return BadRequest();
             }
             return Ok(server);
         }

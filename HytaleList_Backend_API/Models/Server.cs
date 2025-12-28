@@ -17,5 +17,6 @@ namespace HytaleList_Backend_API.Models
         public string? Status { get; set; }
         public int Votes { get; set; }
         public string? Tags { get; set; }
+        // Add server banner / logo maybe as a external URL og just as an image?
     }
 }

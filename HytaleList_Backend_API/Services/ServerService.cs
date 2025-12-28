@@ -22,5 +22,26 @@ namespace HytaleList_Backend_API.Services
             var server = await _ServerRepository.GetServerById(id);
             return server;
         }
+
+        public async Task<Server?> AddServer(Server newServer)
+        {
+            // Add all business logic, valid ip, duplicate server etc.
+
+            var server = new Server
+            {
+                Name = newServer.Name,
+                IPAddress = newServer.IPAddress,
+                Port = newServer.Port,
+                Description = newServer.Description,
+                PlayerCount = 0,
+                MaxPlayers = newServer.MaxPlayers,
+                Status = "Online",
+                Votes = newServer.Votes,
+                Tags = newServer.Tags
+            };
+
+            await _ServerRepository.AddServer(server);
+            return server;
+        }
     }
 }

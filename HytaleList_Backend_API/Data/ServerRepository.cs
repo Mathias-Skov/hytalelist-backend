@@ -40,5 +40,20 @@ namespace HytaleList_Backend_API.Data
                 return null;
             }
         }
+
+        public async Task<Server?> AddServer(Server newServer)
+        {
+            try
+            {
+                var server = await _dbContext.Servers.AddAsync(newServer);
+                await _dbContext.SaveChangesAsync();
+                return newServer;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ServerRepository]: AddServer() - Exception: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

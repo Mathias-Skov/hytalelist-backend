@@ -17,7 +17,7 @@ namespace HytaleList_Backend_API.Data
             try
             {
                 // Might want to seperate into ServerRepository on sight
-                var topVotes = await _dbContext.servers
+                var topVotes = await _dbContext.Servers
                     .Where(v => v.ServerId == serverId)
                     .Select(v => v.Votes)
                     .FirstOrDefaultAsync();
@@ -36,9 +36,9 @@ namespace HytaleList_Backend_API.Data
             try
             {
                 // Might want to seperate into ServerRepository on sight
-                _dbContext.servers.Update(server);
+                _dbContext.Servers.Update(server);
                 
-                _dbContext.votes.Add(vote);
+                _dbContext.Votes.Add(vote);
 
                 await _dbContext.SaveChangesAsync();
                 return true;

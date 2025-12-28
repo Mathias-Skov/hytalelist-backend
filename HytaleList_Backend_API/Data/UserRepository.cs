@@ -17,7 +17,7 @@ namespace HytaleList_Backend_API.Data
         {
             try
             {
-                var user = await _dbContext.users
+                var user = await _dbContext.Users
                     .FirstOrDefaultAsync(u => u.Username == username);
                 return user;
             }
@@ -32,7 +32,7 @@ namespace HytaleList_Backend_API.Data
         {
             try
             {
-                _dbContext.users.Add(user);
+                _dbContext.Users.Add(user);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -47,7 +47,7 @@ namespace HytaleList_Backend_API.Data
         {
             try
             {
-                var user = await _dbContext.users
+                var user = await _dbContext.Users
                     .FirstOrDefaultAsync(u => u.Id == userId);
                 return user;
             }
@@ -62,7 +62,7 @@ namespace HytaleList_Backend_API.Data
         {
             try
             {
-                var findUser = await _dbContext.users.AnyAsync(u => u.Username == username);
+                var findUser = await _dbContext.Users.AnyAsync(u => u.Username == username);
                 return findUser;
             }
             catch

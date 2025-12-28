@@ -17,7 +17,7 @@ namespace HytaleList_Backend_API.Data
         {
             try
             {
-                var serverList = await _dbContext.servers.ToListAsync();
+                var serverList = await _dbContext.Servers.ToListAsync();
                 return serverList;
             } 
             catch (Exception ex)
@@ -31,7 +31,7 @@ namespace HytaleList_Backend_API.Data
         {
             try
             {
-                var server = await _dbContext.servers.FindAsync(id);
+                var server = await _dbContext.Servers.FindAsync(id);
                 return server;
             }
             catch (Exception ex)

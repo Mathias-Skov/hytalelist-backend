@@ -40,30 +40,5 @@ namespace HytaleList_Backend_API.Data
                 return null;
             }
         }
-
-        public async Task<Server?> GetServerByIdUsingLoop(int id)
-        {
-            try
-            {
-                var servers = await _dbContext.servers.ToListAsync();
-
-                int i = 0;
-                while (i < servers.Count)
-                {
-                    Server? server = servers[i];
-                    if (server.ServerId == id)
-                    {
-                        return server;
-                    }
-                    i++;
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[ServerRepository]: GetServerByIdUsingLoop({id}) - Exception: {ex.Message}");
-                return null;
-            }
-        }
     }
 }

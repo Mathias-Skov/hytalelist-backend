@@ -28,7 +28,7 @@ namespace HytaleList_Backend_API.Services
                 return null;
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(userDto.PasswordHash!, user.PasswordHash!))
+            if (!BCrypt.Net.BCrypt.Verify(userDto.Password!, user.PasswordHash!))
             {
                 return null;
             }
@@ -49,7 +49,7 @@ namespace HytaleList_Backend_API.Services
                 return false;
             }
 
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userDto.PasswordHash!);
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password!);
 
             var user = new User
             {

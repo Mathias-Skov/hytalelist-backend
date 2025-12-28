@@ -54,7 +54,7 @@ namespace HytaleList_Backend_API.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<User>> Login([FromBody] UserDTO userDto)
         {
-            if(userDto.Username == null || userDto.PasswordHash == null)
+            if(userDto.Username == null || userDto.Password == null)
             {
                 return BadRequest("Username and password are required.");
             }
@@ -73,7 +73,7 @@ namespace HytaleList_Backend_API.Controllers
         [HttpPost("CreateUser")]
         public async Task<ActionResult<User>> CreateUser([FromBody] UserDTO userDto)
         {
-            if(userDto.Username == null || userDto.PasswordHash == null || userDto.Email == null)
+            if(userDto.Username == null || userDto.Password == null || userDto.Email == null)
             {
                 return BadRequest("Username, password, and email are required.");
             }

@@ -2,6 +2,7 @@
 using HytaleList_Backend_API.Data;
 using HytaleList_Backend_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -74,9 +75,18 @@ namespace HytaleList_Backend_API
                 };
             });
 
+            builder.Services.Configure<ForwardedHeadersOptions>(opts =>
+            {
+                opts.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                // Tilføj Cloudflare ranges som KnownNetworks/Proxies hvis nødvendigt
+            });
+
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
+
+            // Cloudflare real IP handling
+            app.UseForwardedHeaders();
 
             // Use the CORS policy
             app.UseCors("AllowFrontend");

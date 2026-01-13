@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HytaleList_Backend_API.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20260113214419_AddedUserId")]
-    partial class AddedUserId
+    [Migration("20260113223036_AddedVoteLogic")]
+    partial class AddedVoteLogic
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,10 +110,19 @@ namespace HytaleList_Backend_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoteId"));
 
+                    b.Property<string>("IpHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ServerId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserAgent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("VoteDate")

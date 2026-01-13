@@ -20,25 +20,36 @@ namespace HytaleList_Backend_API.Services
             return topVotes;
         }
 
-        public async Task<bool> SubmitVote(int serverId, string username)
+        public async Task<(bool ok, string? error)> SubmitVote(int serverId, string username, string ipHash, string userAgent)
         {
             var server = await _serverService.GetServerById(serverId);
-            if (server == null)
-            {
-                return false;
-            }
-            // On sight make sure the repository updates the vote in case of concurrency votes, instead of using the nav property here.
+            if (server == null) return (false, "Server not found");
+
+            var normalized = username.Trim().ToLower();
+            if (string.IsNullOrWhiteSpace(normalized)) return (false, "Username required");
+
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            var existing = await _voteRepository.GetByUserToday(serverId, normalized, today);
+            if (existing != null) return (false, "You have already voted for this server today.");
+
+            // Tjek om IP har stemt på NOGEN server i dag (på tværs af alle servere)
+            var hasVotedToday = await _voteRepository.HasIpVotedAnyServerToday(ipHash, today);
+            if (hasVotedToday) return (false, "You can only vote for one server per day.");
+
             server.Votes += 1;
 
             var vote = new Vote
             {
                 ServerId = serverId,
-                Username = username,
-                VoteDate = DateTime.UtcNow
+                Username = normalized,
+                VoteDate = DateTime.UtcNow,
+                IpHash = ipHash,
+                UserAgent = userAgent
             };
 
-            var result = await _voteRepository.UpdateServerVotes(server, vote);
-            return result;
+            var saved = await _voteRepository.AddVote(vote, server);
+            return saved ? (true, null) : (false, "Failed to submit vote.");
         }
     }
 }

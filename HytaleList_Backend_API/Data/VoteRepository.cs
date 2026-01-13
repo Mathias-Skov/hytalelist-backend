@@ -1,53 +1,81 @@
-﻿using HytaleList_Backend_API.Models;
+﻿using HytaleList_Backend_API.Data;
+using HytaleList_Backend_API.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
-namespace HytaleList_Backend_API.Data
+public class VoteRepository
 {
-    public class VoteRepository
+    private readonly MyDbContext _dbContext;
+    public VoteRepository(MyDbContext dbContext)
     {
-        private readonly MyDbContext _dbContext;
-        public VoteRepository(MyDbContext dbContext)
+        _dbContext = dbContext;
+    }
+
+    public async Task<int> GetTopVotesByServerId(int serverId)
+    {
+        try
         {
-            _dbContext = dbContext;
+            return await _dbContext.Servers
+                .Where(v => v.ServerId == serverId)
+                .Select(v => v.Votes)
+                .FirstOrDefaultAsync();
         }
-
-        public async Task<int> GetTopVotesByServerId(int serverId)
+        catch (Exception ex)
         {
-            try
-            {
-                // Might want to seperate into ServerRepository on sight
-                var topVotes = await _dbContext.Servers
-                    .Where(v => v.ServerId == serverId)
-                    .Select(v => v.Votes)
-                    .FirstOrDefaultAsync();
-
-                return topVotes;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[VoteRepository]: GetTopVotesByServerId(serverId) - Exception: {ex.Message}");
-                return 0;
-            }
+            Debug.WriteLine($"[VoteRepository]: GetTopVotesByServerId(serverId) - Exception: {ex.Message}");
+            return 0;
         }
+    }
 
-        public async Task<bool> UpdateServerVotes(Server server, Vote vote)
+    public async Task<Vote?> GetByUserToday(int serverId, string username, DateOnly today)
+    {
+        var u = username.Trim().ToLower();
+        var todayDateTime = today.ToDateTime(TimeOnly.MinValue);
+        var tomorrowDateTime = today.AddDays(1).ToDateTime(TimeOnly.MinValue);
+
+        return await _dbContext.Votes
+            .FirstOrDefaultAsync(v => v.ServerId == serverId
+                                   && v.Username == u
+                                   && v.VoteDate >= todayDateTime
+                                   && v.VoteDate < tomorrowDateTime);
+    }
+
+    public async Task<int> CountByIpToday(int serverId, string ipHash, DateOnly today)
+    {
+        var todayDateTime = today.ToDateTime(TimeOnly.MinValue);
+        var tomorrowDateTime = today.AddDays(1).ToDateTime(TimeOnly.MinValue);
+
+        return await _dbContext.Votes
+            .CountAsync(v => v.ServerId == serverId
+                          && v.IpHash == ipHash
+                          && v.VoteDate >= todayDateTime
+                          && v.VoteDate < tomorrowDateTime);
+    }
+
+    public async Task<bool> AddVote(Vote vote, Server server)
+    {
+        try
         {
-            try
-            {
-                // Might want to seperate into ServerRepository on sight
-                _dbContext.Servers.Update(server);
-                
-                _dbContext.Votes.Add(vote);
-
-                await _dbContext.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[VoteRepository]: UpdateServerVotes(server) - Exception: {ex.Message}");
-                return false;
-            }
+            _dbContext.Servers.Update(server);
+            _dbContext.Votes.Add(vote);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[VoteRepository]: AddVote - {ex.Message}");
+            return false;
+        }
+    }
+
+    public async Task<bool> HasIpVotedAnyServerToday(string ipHash, DateOnly today)
+    {
+        var todayDateTime = today.ToDateTime(TimeOnly.MinValue);
+        var tomorrowDateTime = today.AddDays(1).ToDateTime(TimeOnly.MinValue);
+
+        return await _dbContext.Votes
+            .AnyAsync(v => v.IpHash == ipHash
+                        && v.VoteDate >= todayDateTime
+                        && v.VoteDate < tomorrowDateTime);
     }
 }

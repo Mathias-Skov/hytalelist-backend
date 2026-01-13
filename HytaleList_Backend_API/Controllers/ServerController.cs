@@ -2,6 +2,7 @@
 using HytaleList_Backend_API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HytaleList_Backend_API.Controllers
 {
@@ -39,12 +40,29 @@ namespace HytaleList_Backend_API.Controllers
             return Ok(server);
         }
 
-        // POST: /Server/AddServer
         [HttpPost("AddServer")]
         [Authorize]
         public async Task<ActionResult<Server>> AddServer([FromBody] Server newServer)
         {
-            var server = await _serverService.AddServer(newServer);
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User not found in token");
+            }
+
+            if (!int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized("Invalid user ID");
+            }
+
+            var existingServer = await _serverService.GetServerByUserId(userId);
+            if (existingServer != null)
+            {
+                return BadRequest("You can only add one server");
+            }
+
+            var server = await _serverService.AddServer(newServer, userId); // Send userId her
             if (server == null)
             {
                 return BadRequest();

@@ -1,31 +1,37 @@
 ﻿using HytaleList_Backend_API.Data;
 using HytaleList_Backend_API.Models;
+using System.Diagnostics;
 
 namespace HytaleList_Backend_API.Services
 {
     public class ServerService
     {
-        private readonly ServerRepository _ServerRepository;
-        public ServerService(ServerRepository ServerRepository)
+        private readonly ServerRepository _serverRepository;
+        public ServerService(ServerRepository serverRepository) 
         {
-            _ServerRepository = ServerRepository;
+            _serverRepository = serverRepository;
         }
 
         public async Task<List<Server>> GetAllServers()
         {
-            var servers = await _ServerRepository.GetAllServers();
+            var servers = await _serverRepository.GetAllServers();
             return servers;
         }
 
         public async Task<Server?> GetServerById(int id)
         {
-            var server = await _ServerRepository.GetServerById(id);
+            var server = await _serverRepository.GetServerById(id);
             return server;
         }
 
-        public async Task<Server?> AddServer(Server newServer)
+        public async Task<Server?> GetServerByUserId(int userId)
         {
-            // Add all business logic, valid ip, duplicate server etc.
+            return await _serverRepository.GetServerByUserId(userId);
+        }
+
+        public async Task<Server?> AddServer(Server newServer, int userId)
+        {
+            Debug.WriteLine($"[Service] Creating server with UserId: {userId}");
 
             var server = new Server
             {
@@ -37,10 +43,16 @@ namespace HytaleList_Backend_API.Services
                 MaxPlayers = newServer.MaxPlayers,
                 Status = "Online",
                 Votes = newServer.Votes,
-                Tags = newServer.Tags
+                Tags = newServer.Tags,
+                UserId = userId
             };
 
-            await _ServerRepository.AddServer(server);
+            Debug.WriteLine($"[Service] Server UserId before repository: {server.UserId}");
+
+            await _serverRepository.AddServer(server);
+
+            Debug.WriteLine($"[Service] Server UserId after repository: {server.UserId}");
+
             return server;
         }
     }

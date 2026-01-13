@@ -54,12 +54,15 @@ namespace HytaleList_Backend_API.Migrations
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Votes")
                         .HasColumnType("int");
 
                     b.HasKey("ServerId");
 
-                    b.ToTable("servers");
+                    b.ToTable("Servers");
                 });
 
             modelBuilder.Entity("HytaleList_Backend_API.Models.User", b =>
@@ -93,7 +96,7 @@ namespace HytaleList_Backend_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("users");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HytaleList_Backend_API.Models.Vote", b =>
@@ -117,7 +120,7 @@ namespace HytaleList_Backend_API.Migrations
 
                     b.HasIndex("ServerId");
 
-                    b.ToTable("votes");
+                    b.ToTable("Votes");
                 });
 
             modelBuilder.Entity("HytaleList_Backend_API.Models.Vote", b =>

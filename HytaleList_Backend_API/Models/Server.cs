@@ -8,6 +8,7 @@ namespace HytaleList_Backend_API.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ServerId { get; set; }
+        public int UserId { get; set; }
         public string? Name { get; set; }
         public string? IPAddress { get; set; }
         public int Port { get; set; }

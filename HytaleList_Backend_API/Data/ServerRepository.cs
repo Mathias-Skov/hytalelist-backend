@@ -45,13 +45,35 @@ namespace HytaleList_Backend_API.Data
         {
             try
             {
+                Debug.WriteLine($"[Repository] Adding server with UserId: {newServer.UserId}");
+
                 var server = await _dbContext.Servers.AddAsync(newServer);
+
+                Debug.WriteLine($"[Repository] Server UserId before save: {server.Entity.UserId}");
+
                 await _dbContext.SaveChangesAsync();
+
+                Debug.WriteLine($"[Repository] Server UserId after save: {server.Entity.UserId}");
+
                 return newServer;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"[ServerRepository]: AddServer() - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<Server?> GetServerByUserId(int userId)
+        {
+            try
+            {
+                return await _dbContext.Servers
+                    .FirstOrDefaultAsync(s => s.UserId == userId);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ServerRepository]: GetServerByUserId() - Exception: {ex.Message}");
                 return null;
             }
         }

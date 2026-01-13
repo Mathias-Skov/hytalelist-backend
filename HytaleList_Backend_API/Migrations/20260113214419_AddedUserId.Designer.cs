@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HytaleList_Backend_API.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20251218213729_Inital")]
-    partial class Inital
+    [Migration("20260113214419_AddedUserId")]
+    partial class AddedUserId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,12 +57,15 @@ namespace HytaleList_Backend_API.Migrations
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Votes")
                         .HasColumnType("int");
 
                     b.HasKey("ServerId");
 
-                    b.ToTable("servers");
+                    b.ToTable("Servers");
                 });
 
             modelBuilder.Entity("HytaleList_Backend_API.Models.User", b =>
@@ -77,26 +80,61 @@ namespace HytaleList_Backend_API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmailVerified")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("EmailVerified")
+                        .HasColumnType("bit");
 
                     b.Property<int>("ListedServers")
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Salt")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("users");
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("HytaleList_Backend_API.Models.Vote", b =>
+                {
+                    b.Property<int>("VoteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoteId"));
+
+                    b.Property<int>("ServerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("VoteDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("VoteId");
+
+                    b.HasIndex("ServerId");
+
+                    b.ToTable("Votes");
+                });
+
+            modelBuilder.Entity("HytaleList_Backend_API.Models.Vote", b =>
+                {
+                    b.HasOne("HytaleList_Backend_API.Models.Server", "Server")
+                        .WithMany()
+                        .HasForeignKey("ServerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Server");
                 });
 #pragma warning restore 612, 618
         }

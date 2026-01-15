@@ -24,6 +24,9 @@ namespace HytaleList_Backend_API
             builder.Services.AddScoped<ServerRepository>();
             builder.Services.AddScoped<ServerService>();
 
+            // Discord related services
+            builder.Services.AddHttpClient<DiscordService>();
+
             // User related services
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();

@@ -7,9 +7,12 @@ namespace HytaleList_Backend_API.Services
     public class ServerService
     {
         private readonly ServerRepository _serverRepository;
-        public ServerService(ServerRepository serverRepository) 
+        private readonly DiscordService _discordService;
+
+        public ServerService(ServerRepository serverRepository, DiscordService discordService)
         {
             _serverRepository = serverRepository;
+            _discordService = discordService;
         }
 
         public async Task<List<Server>> GetAllServers()
@@ -47,12 +50,18 @@ namespace HytaleList_Backend_API.Services
                 UserId = userId
             };
 
-            Debug.WriteLine($"[Service] Server UserId before repository: {server.UserId}");
-
             await _serverRepository.AddServer(server);
 
-            Debug.WriteLine($"[Service] Server UserId after repository: {server.UserId}");
+            try
+            {
+                await _discordService.SendAnnouncement(server);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
 
+            
             return server;
         }
     }

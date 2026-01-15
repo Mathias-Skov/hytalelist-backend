@@ -30,8 +30,8 @@ public class VoteRepository
     public async Task<Vote?> GetByUserToday(int serverId, string username, DateOnly today)
     {
         var u = username.Trim().ToLower();
-        var todayDateTime = today.ToDateTime(TimeOnly.MinValue);
-        var tomorrowDateTime = today.AddDays(1).ToDateTime(TimeOnly.MinValue);
+        var todayDateTime = today.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
+        var tomorrowDateTime = today.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
 
         return await _dbContext.Votes
             .FirstOrDefaultAsync(v => v.ServerId == serverId
@@ -42,8 +42,8 @@ public class VoteRepository
 
     public async Task<int> CountByIpToday(int serverId, string ipHash, DateOnly today)
     {
-        var todayDateTime = today.ToDateTime(TimeOnly.MinValue);
-        var tomorrowDateTime = today.AddDays(1).ToDateTime(TimeOnly.MinValue);
+        var todayDateTime = today.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
+        var tomorrowDateTime = today.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
 
         return await _dbContext.Votes
             .CountAsync(v => v.ServerId == serverId
@@ -70,12 +70,12 @@ public class VoteRepository
 
     public async Task<bool> HasIpVotedAnyServerToday(string ipHash, DateOnly today)
     {
-        var todayDateTime = today.ToDateTime(TimeOnly.MinValue);
-        var tomorrowDateTime = today.AddDays(1).ToDateTime(TimeOnly.MinValue);
+        var todayDateTime = today.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
+        var tomorrowDateTime = today.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
 
         return await _dbContext.Votes
             .AnyAsync(v => v.IpHash == ipHash
-                        && v.VoteDate >= todayDateTime
-                        && v.VoteDate < tomorrowDateTime);
+                       && v.VoteDate >= todayDateTime
+                       && v.VoteDate < tomorrowDateTime);
     }
 }

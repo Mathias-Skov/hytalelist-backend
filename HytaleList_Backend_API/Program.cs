@@ -34,7 +34,7 @@ namespace HytaleList_Backend_API
 
             builder.Services.AddDbContext<MyDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             // CORS policy to allow requests from the frontend application in development stage
@@ -42,7 +42,7 @@ namespace HytaleList_Backend_API
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+                    policy.WithOrigins("http://localhost:3000", "https://localhost:3000", "https://hytalelist.io")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
@@ -106,6 +106,11 @@ namespace HytaleList_Backend_API
             app.UseAuthorization();
 
             app.MapControllers();
+
+            // Apply pending migrations at startup
+            using var scope = app.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+            db.Database.EnsureCreated();
 
             app.Run();
         }

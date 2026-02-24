@@ -34,7 +34,8 @@ Clone the repository
 ```git clone https://github.com/Mathias-Skov/hytalelist-backend.git```
 
 Edit appsettings.json for your configuration
-```{
+```
+{
   "Jwt": {
     "Key": "<your-secret-key>",
     "Issuer": "HytaleList.Api",
@@ -59,6 +60,7 @@ Edit appsettings.json for your configuration
 Run migrations
 
 ```dotnet ef database update```
+
 Build and run the project
 
 Example Endpoints

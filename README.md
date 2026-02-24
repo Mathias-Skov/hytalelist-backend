@@ -63,7 +63,7 @@ Run migrations
 
 Build and run the project
 
-Example Endpoints
+# Example Endpoints
 ```
 ### Server
 GET    /api/server
